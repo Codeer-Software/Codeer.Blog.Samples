@@ -1,0 +1,15 @@
+# ClbEquipmentManagement 専用の追加設定
+# bin / obj / .vs などは、リポジトリ直下の .gitignore（Visual Studio 用）で除外済み
+
+# SQLite のデータベース（手元で作られるもの。サンプルの DB はコミットしない）
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# 手元だけの設定や秘密情報（接続文字列・キーはコミットしない）
+appsettings.*.local.json
+secrets.json
+*.pfx
+CLB-license*
