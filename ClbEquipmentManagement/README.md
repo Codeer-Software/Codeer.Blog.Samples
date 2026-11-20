@@ -16,7 +16,7 @@ Qiita の連載「組み込み機器と業務画面の境界・連携・現場�
 
 | 項目 | 版 |
 | --- | --- |
-| Codeer.LowCode.Blazor | 1.3.64 |
+| Codeer.LowCode.Blazor | 1.3.70（[CLB Starter](https://github.com/Codeer-Software/Codeer.LowCode.Blazor.Starter) のコミット 4314eff を元にしている） |
 | .NET SDK | 10.0（確認は 10.0.404。`global.json` で 10.0 系に固定） |
 | DB | SQLite |
 | 開発環境 | VS Code（C# Dev Kit） |
@@ -37,6 +37,7 @@ ClbEquipmentManagement/
 ├─ Source/Hosts/Cookie/        CLB Starter の構成（LowCodeApp.sln ほか）
 ├─ Source/Hosts/Common/        デザイナなど
 ├─ DesignProjects/EquipmentManagement/   画面とモジュールの定義
+├─ Database/                   テーブル定義と架空データの SQL（NAK-04 から）
 ├─ Simulator/                  機器シミュレーター（NAK-06 から）
 └─ Adapters/                   MQTT・シリアル・C++ のアダプター（NAK-07 以降）
 ```
