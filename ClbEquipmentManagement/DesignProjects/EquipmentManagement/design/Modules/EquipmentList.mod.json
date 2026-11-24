@@ -1,0 +1,184 @@
+{
+  "Name": "EquipmentList",
+  "DataSourceName": "Main",
+  "CanCreate": false,
+  "CanUpdate": false,
+  "CanDelete": false,
+  "Fields": [
+    {
+      "QuerySetting": {
+        "Parameters": [
+          {
+            "Name": "equipment_id",
+            "DbType": "integer"
+          },
+          {
+            "Name": "asset_no",
+            "DbType": "text"
+          },
+          {
+            "Name": "model_code",
+            "DbType": "text"
+          },
+          {
+            "Name": "model_name",
+            "DbType": "text"
+          },
+          {
+            "Name": "serial_no",
+            "DbType": "text"
+          },
+          {
+            "Name": "status",
+            "DbType": "text"
+          },
+          {
+            "Name": "current_location",
+            "DbType": "text"
+          },
+          {
+            "Name": "installed_on",
+            "DbType": "DATE"
+          }
+        ]
+      },
+      "Name": "Query",
+      "TypeFullName": "Codeer.LowCode.Blazor.Repository.Design.QueryFieldDesign"
+    },
+    {
+      "DbColumn": "equipment_id",
+      "Name": "EquipmentId",
+      "TypeFullName": "Codeer.LowCode.Blazor.Repository.Design.TextFieldDesign"
+    },
+    {
+      "DbColumn": "asset_no",
+      "DisplayName": "管理番号",
+      "Name": "AssetNo",
+      "TypeFullName": "Codeer.LowCode.Blazor.Repository.Design.TextFieldDesign"
+    },
+    {
+      "TitleText": "",
+      "TitleVariable": "AssetNo.Value",
+      "Module": "Equipment",
+      "IdVariable": "EquipmentId.Value",
+      "Name": "AssetNoLink",
+      "TypeFullName": "Codeer.LowCode.Blazor.Repository.Design.AnchorTagFieldDesign"
+    },
+    {
+      "DbColumn": "model_code",
+      "DisplayName": "型番",
+      "Name": "ModelCode",
+      "TypeFullName": "Codeer.LowCode.Blazor.Repository.Design.TextFieldDesign"
+    },
+    {
+      "DbColumn": "model_name",
+      "DisplayName": "機種名",
+      "Name": "ModelName",
+      "TypeFullName": "Codeer.LowCode.Blazor.Repository.Design.TextFieldDesign"
+    },
+    {
+      "DbColumn": "serial_no",
+      "DisplayName": "製造番号",
+      "Name": "SerialNo",
+      "TypeFullName": "Codeer.LowCode.Blazor.Repository.Design.TextFieldDesign"
+    },
+    {
+      "DbColumn": "status",
+      "DisplayName": "状態",
+      "Name": "Status",
+      "TypeFullName": "Codeer.LowCode.Blazor.Repository.Design.TextFieldDesign"
+    },
+    {
+      "DbColumn": "current_location",
+      "DisplayName": "今の設置場所",
+      "Name": "CurrentLocation",
+      "TypeFullName": "Codeer.LowCode.Blazor.Repository.Design.TextFieldDesign"
+    },
+    {
+      "DbColumn": "installed_on",
+      "DisplayName": "設置開始日",
+      "Name": "InstalledOn",
+      "TypeFullName": "Codeer.LowCode.Blazor.Repository.Design.DateFieldDesign"
+    }
+  ],
+  "ListLayouts": {
+    "": {
+      "DataOnlyFields": [
+        "EquipmentId",
+        "AssetNo"
+      ],
+      "Elements": [
+        [
+          {
+            "FieldName": "AssetNoLink",
+            "Label": "管理番号",
+            "Width": 110,
+            "CanUserSort": false
+          },
+          {
+            "FieldName": "ModelCode",
+            "Label": "型番",
+            "Width": 110,
+            "CanUserSort": false
+          },
+          {
+            "FieldName": "ModelName",
+            "Label": "機種名",
+            "Width": 140,
+            "CanUserSort": false
+          },
+          {
+            "FieldName": "SerialNo",
+            "Label": "製造番号",
+            "Width": 130,
+            "CanUserSort": false
+          },
+          {
+            "FieldName": "Status",
+            "Label": "状態",
+            "Width": 90,
+            "CanUserSort": false
+          },
+          {
+            "FieldName": "CurrentLocation",
+            "Label": "今の設置場所",
+            "CanUserSort": false
+          },
+          {
+            "FieldName": "InstalledOn",
+            "Label": "設置開始日",
+            "Width": 130,
+            "CanUserSort": false
+          }
+        ]
+      ]
+    }
+  },
+  "SearchLayouts": {
+    "": {
+      "Layout": {
+        "Name": "SearchGridLayout",
+        "Rows": [
+          {
+            "Columns": [
+              {}
+            ]
+          }
+        ],
+        "TypeFullName": "Codeer.LowCode.Blazor.Repository.Design.SearchGridLayoutDesign"
+      }
+    }
+  },
+  "ListPageFieldDesign": {
+    "CanNavigateToDetail": false,
+    "SearchCondition": {
+      "LimitCount": 50
+    },
+    "PagerPosition": "Bottom",
+    "CanDelete": false,
+    "CanUserSort": false,
+    "Name": "",
+    "TypeFullName": "Codeer.LowCode.Blazor.Repository.Design.ListFieldDesign"
+  },
+  "PageTitle": "設備一覧"
+}

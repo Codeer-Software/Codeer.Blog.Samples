@@ -1,0 +1,13 @@
+{
+  "ConnectionStrings": {
+    "Main": "Data Source=C:\\ClbEquipmentManagement.Local\\Data\\main.db;Foreign Keys=True;"
+  },
+  "CurrentDeployInfoName": "local",
+  "DeployInfo": {
+    "local": {
+      "DeployMethod": "FileSystem",
+      "Directory": "C:\\ClbEquipmentManagement.Local\\Designs",
+      "AllowCliDeploy": true
+    }
+  }
+}

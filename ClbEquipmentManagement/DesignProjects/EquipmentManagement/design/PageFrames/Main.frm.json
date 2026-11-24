@@ -1,0 +1,131 @@
+{
+  "IsApplicationRoot": true,
+  "Name": "Main",
+  "Left": {
+    "IsVisible": true,
+    "Home": {
+      "Type": "Text",
+      "Text": "Home"
+    },
+    "Links": [
+      {
+        "Title": "設備一覧",
+        "ModulePageType": "List",
+        "Module": "EquipmentList",
+        "ListPageDesign": {
+          "PageTitle": "設備一覧",
+          "UseNavigateToCreate": false,
+          "ListFieldDesign": {
+            "CanNavigateToDetail": false,
+            "SearchCondition": {
+              "LimitCount": 50,
+              "ModuleName": "EquipmentList"
+            },
+            "PagerPosition": "Bottom",
+            "CanUserSort": false,
+            "Name": "",
+            "TypeFullName": "Codeer.LowCode.Blazor.Repository.Design.ListFieldDesign"
+          }
+        }
+      },
+      {
+        "Title": "設備",
+        "Module": "Equipment",
+        "ListPageDesign": {
+          "ListFieldDesign": {
+            "CanNavigateToDetail": true,
+            "SearchCondition": {
+              "LimitCount": 50,
+              "SortConditions": [
+                {
+                  "Variable": "AssetNo.Value"
+                }
+              ],
+              "ModuleName": "Equipment"
+            },
+            "PagerPosition": "Bottom",
+            "CanDelete": true,
+            "Name": "",
+            "TypeFullName": "Codeer.LowCode.Blazor.Repository.Design.ListFieldDesign"
+          }
+        }
+      },
+      {
+        "Title": "機種",
+        "Module": "DeviceModel",
+        "ListPageDesign": {
+          "ListFieldDesign": {
+            "CanNavigateToDetail": true,
+            "SearchCondition": {
+              "LimitCount": 50,
+              "SortConditions": [
+                {
+                  "Variable": "ModelCode.Value"
+                }
+              ],
+              "ModuleName": "DeviceModel"
+            },
+            "PagerPosition": "Bottom",
+            "CanDelete": true,
+            "Name": "",
+            "TypeFullName": "Codeer.LowCode.Blazor.Repository.Design.ListFieldDesign"
+          }
+        }
+      },
+      {
+        "Title": "設置履歴",
+        "Module": "Installation",
+        "ListPageDesign": {
+          "ListFieldDesign": {
+            "CanNavigateToDetail": true,
+            "SearchCondition": {
+              "LimitCount": 50,
+              "SortConditions": [
+                {
+                  "Variable": "StartedOn.Value",
+                  "IsDescending": true
+                }
+              ],
+              "ModuleName": "Installation"
+            },
+            "PagerPosition": "Bottom",
+            "CanDelete": true,
+            "Name": "",
+            "TypeFullName": "Codeer.LowCode.Blazor.Repository.Design.ListFieldDesign"
+          }
+        }
+      },
+      {
+        "Title": "AppUser",
+        "Module": "AppUser"
+      }
+    ],
+    "Foreground": "#ffffff",
+    "BackgroundStart": "#052767",
+    "BackgroundEnd": "#3a0647"
+  },
+  "Right": {
+    "Foreground": "#ffffff",
+    "BackgroundStart": "#052767",
+    "BackgroundEnd": "#3a0647"
+  },
+  "Header": {
+    "Foreground": "#000000",
+    "Background": "#f8f9fa"
+  },
+  "TopPageModuleDesign": {
+    "Module": "Home",
+    "ListPageDesign": {
+      "ListFieldDesign": {
+        "SearchCondition": {
+          "LimitCount": 50
+        },
+        "PagerPosition": "Bottom",
+        "CanDelete": true,
+        "Name": "",
+        "TypeFullName": "Codeer.LowCode.Blazor.Repository.Design.ListFieldDesign"
+      }
+    }
+  },
+  "TopPageModule": "Home"
+}

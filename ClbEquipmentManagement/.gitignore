@@ -13,3 +13,29 @@ appsettings.*.local.json
 secrets.json
 *.pfx
 CLB-license*
+
+# VS Code の Claude 向けの、手元専用のルール
+CLAUDE.local.md
+
+# ---- ここから下は CLB Starter（コミット 4314eff）の .gitignore から取り込んだもの ----
+# 手元の実行データ（デザイナのコマンドの出力など）
+Local/
+# AIForDeveloper/ のうち、デザイナの developer-workspace が作るもの（先頭が _ のもの）
+AIForDeveloper/_*
+# デザインプロジェクトの AI 用ワークスペースのうち、自動で作られるもの・PC ごとのもの
+DesignProjects/*/AIForDesigner/
+DesignProjects/*/tools/
+DesignProjects/*/LocalEnvironment.md
+DesignProjects/*/.claude/settings.local.json
+DesignProjects/*/.claude/license_status.json
+DesignProjects/*/.codex/hooks.json
+DesignProjects/*/.codex/rules/codeer-lowcode.rules
+# このフォルダ直下の、PC ごとの許可とフック（developer-workspace が作る）
+/.claude/settings.local.json
+/.codex/hooks.json
+/.codex/rules/codeer-lowcode.rules
+# デザインプロジェクトの秘密の設定とエディタの状態
+DesignProjects/*/design/designer.settings.Development.json
+DesignProjects/*/design/.ide/
+# Selenium のテスト：PC ごとの接続先
+testsettings.local.json
