@@ -164,7 +164,7 @@ CLB Starter の初期設定（`C:\Codeer.LowCode.Blazor.Local\`）とは分け�
 
 | タグ | 記事 | 内容 |
 | --- | --- | --- |
-| NAK-04 | （公開後に記入） | 型番と個体を分ける設備台帳 |
+| NAK-04 | [型番と個体を分けて、交換・移設の履歴が消えない設備台帳を作る](https://qiita.com/nakano-kenji/items/b9c5a9ec960ef241c2a6) | 型番と個体を分ける設備台帳 |
 
 ## 秘密情報について
 
