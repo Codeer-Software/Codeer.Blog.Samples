@@ -1,0 +1,8 @@
+# デザイナ (ai-workspace / ai-refresh) が再生成するもの・マシン固有のもの
+AIForDesigner/
+tools/
+LocalEnvironment.md
+.claude/settings.local.json
+.claude/license_status.json
+.codex/hooks.json
+.codex/rules/codeer-lowcode.rules

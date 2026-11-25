@@ -1,0 +1,14 @@
+{
+  "ConnectionStrings": {
+    "Main": "Data Source=C:\\ClbDbAndSql.Local\\02\\Data\\main.db;Foreign Keys=True;",
+    "Legacy": "Server=localhost;Database=clb_blog_02;Integrated Security=True;TrustServerCertificate=True;"
+  },
+  "CurrentDeployInfoName": "local",
+  "DeployInfo": {
+    "local": {
+      "DeployMethod": "FileSystem",
+      "Directory": "C:\\ClbDbAndSql.Local\\02\\Designs",
+      "AllowCliDeploy": true
+    }
+  }
+}
