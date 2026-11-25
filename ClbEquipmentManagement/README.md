@@ -49,11 +49,13 @@ ClbEquipmentManagement/
 │  ├─ design/                         デザイン本体（画面とモジュールの定義）
 │  ├─ designer.settings.Development.example.json   デザイナの設定の見本
 │  └─ Project.md、CLAUDE.md、AGENTS.md            デザインを AI エージェントで作るときの説明
+├─ Simulator/
+│  └─ EquipmentSimulator/             機器シミュレーター（コンソールアプリ。NAK-06 から）
 └─ Database/                          テーブル定義と架空データの SQL
-                                      （000_base.sql、001_tables.sql、002_seed.sql、equipment_list.sql）
+                                      （000_base.sql、001_tables.sql、002_seed.sql、003_measurements.sql、equipment_list.sql）
 ```
 
-これから足すもの：`Simulator/`（機器シミュレーター。NAK-06 から）、`Adapters/`（MQTT・シリアル・C++ のアダプター。NAK-07 以降）。記事の進み具合に合わせて追加します。
+これから足すもの：`Adapters/`（MQTT・シリアル・C++ のアダプター。NAK-07 以降）。記事の進み具合に合わせて追加します。
 
 ## 動かし方
 
@@ -97,12 +99,12 @@ PowerShell で、同じ画面のまま上から順に実行します（手順5�
    dotnet build Source\LowCodeApp.sln
    ```
 
-5. DB を作る（ログイン用のテーブル、設備台帳のテーブル、架空データ）。`C:\ClbEquipmentManagement.Local\Data\main.db` ができます。
+5. DB を作る（ログイン用のテーブル、設備台帳のテーブル、架空データ、計測値のテーブル）。`C:\ClbEquipmentManagement.Local\Data\main.db` ができます。
 
    ```powershell
    $designer = (Resolve-Path "Source\LowCodeApp.Designer\bin\Debug\net10.0-windows\LowCodeApp.Designer.exe").Path
    $design   = (Resolve-Path "DesignProjects\EquipmentManagement\design").Path
-   foreach ($f in "000_base", "001_tables", "002_seed") {
+   foreach ($f in "000_base", "001_tables", "002_seed", "003_measurements") {
      $p = Start-Process -FilePath $designer -Wait -PassThru -ArgumentList @(
        "sql", $design, "--datasource", "Main",
        "--file", (Resolve-Path "Database\$f.sql").Path,
@@ -111,7 +113,7 @@ PowerShell で、同じ画面のまま上から順に実行します（手順5�
    }
    ```
 
-   3つとも終了コードが 0 なら成功です。0 でないときは、`$env:TEMP\clb_<ファイル名>.json` にエラーの内容が書かれています。
+   4つとも終了コードが 0 なら成功です。0 でないときは、`$env:TEMP\clb_<ファイル名>.json` にエラーの内容が書かれています。
    テーブルがすでにあると失敗するので、最初からやり直すときは `C:\ClbEquipmentManagement.Local\Data\main.db` を消してから流します。
 
 6. デザインをデプロイする（`C:\ClbEquipmentManagement.Local\Designs\App.zip` ができます）。
@@ -158,6 +160,60 @@ VS Code でコードを書いたことはあっても、アプリを動かした
 DB とファイルの保存先は、`C:\ClbEquipmentManagement.Local\` 以下を使います。
 CLB Starter の初期設定（`C:\Codeer.LowCode.Blazor.Local\`）とは分けています。
 
+### 計測値を送る（NAK-06）
+
+機器シミュレーターが、架空の設備4台の計測値を、サーバーの受信API（`/api/device/measurements`）に HTTPS で送ります。受け取った計測値は、画面の「計測値」に出ます。
+上の「手順」の1〜7が終わり、サーバーが動いている状態から始めます。
+
+1. **機器用のユーザーを作る。** ブラウザで `admin` でログインし、左の「AppUser」→「新規作成」で、次のユーザーを作ります。
+
+   | 項目 | 値 |
+   | --- | --- |
+   | ユーザー識別名 | `device-gateway` |
+   | 表示名 | `機器用（受信API）` |
+   | パスワード | 長いランダムな文字列（下の確認の欄にも同じものを入れる） |
+
+   入れたら「Submit」を押して保存します。ユーザー識別名は、`appsettings.json` の `ServiceAccounts` に書いた名前（`device-gateway`）と同じにします。
+   受信API は、このユーザーの権限で計測値を保存します。計測値を書けるのは、このユーザーだけです（計測値モジュールの「ユーザー権限（編集）」で決めています）。
+   このユーザーで画面にログインすることはないので、パスワードを控えておく必要はありません。パスワードは、たとえば次のコマンドで作れます。
+
+   ```powershell
+   [Convert]::ToBase64String([System.Security.Cryptography.RandomNumberGenerator]::GetBytes(24))
+   ```
+
+2. **キーを2つ作る。** 受信API は、`X-Api-Key` ヘッダーのキーで送り手を見分けます。キーの名前と、送ってよい管理番号は `Source\LowCodeApp.Server\appsettings.json` の `DeviceApi:Keys` にあります（`sim-all` はすべての設備、`sim-pump` は EQ-0003 だけ）。キーの値は、.NET のユーザーシークレットに入れます。別のターミナルで、このフォルダから実行します。
+
+   ```powershell
+   function New-DeviceKey { [Convert]::ToBase64String([System.Security.Cryptography.RandomNumberGenerator]::GetBytes(32)).TrimEnd('=').Replace('+','-').Replace('/','_') }
+   dotnet user-secrets set "DeviceApi:Secrets:sim-all"  (New-DeviceKey) --project Source\LowCodeApp.Server
+   dotnet user-secrets set "DeviceApi:Secrets:sim-pump" (New-DeviceKey) --project Source\LowCodeApp.Server
+   dotnet user-secrets list --project Source\LowCodeApp.Server | ForEach-Object { ($_ -split ' = ')[0] }
+   ```
+
+   `set` は「Successfully saved DeviceApi:Secrets:sim-all to the secret store.」のように出します（キーの値は出ません）。最後の行で、`DeviceApi:Secrets:sim-pump` と `DeviceApi:Secrets:sim-all` の2つが出れば成功です。`dotnet user-secrets list` はそのままだとキーの値も出すので、名前だけを出すようにしています。
+   キーの値は、ファイルやチャットに貼らないでください。キーを入れたら、サーバーを起動し直します（Ctrl+C で止めて、手順7のコマンドをもう一度実行します）。
+
+3. **シミュレーターを動かす。** キーを環境変数 `CLB_DEVICE_API_KEY` に入れて動かし、終わったら環境変数を消します。
+
+   ```powershell
+   $env:CLB_DEVICE_API_KEY = (((dotnet user-secrets list --project Source\LowCodeApp.Server) | Select-String '^DeviceApi:Secrets:sim-all = ').Line -split ' = ', 2)[1]
+   dotnet run --project Simulator\EquipmentSimulator -- --count 5
+   Remove-Item Env:CLB_DEVICE_API_KEY
+   ```
+
+   4台に1件ずつを5回、合わせて20件を送ります。20行とも `201 Created` と出て、最後に「20 件を送りました。」と出れば成功です。ブラウザの「計測値」に20行が出ます。計測時刻は、シミュレーターが出した時刻と同じ（日本時間）で出ます。DB には UTC で入っています。
+   引数は `--url`（送り先。既定は `https://localhost:7137`）、`--count`（何回送るか。既定は 5）、`--interval`（間の秒数。既定は 1）、`--seed`（乱数の種。既定は 42）です。
+
+送り先は https でなければなりません。シミュレーターは、`--url` が http だと送らずに止まります（`--url が https ではありません` と出て、終了コード 2）。受信API も、http で届いた要求は https に転送せず、400（「HTTPS で送ってください」）で断ります。
+
+ここで作るキーは、手元で試すためのものです。本番では、別のキーを作って使ってください。使い回さないでください。
+
+試し終わったら、キーを消してください。ユーザーシークレットはこのフォルダの外（`%APPDATA%\Microsoft\UserSecrets\`）にあるので、このフォルダを消しても残ります。このフォルダで次のコマンドを実行すると、このサンプルのサーバーのユーザーシークレットがすべて消えます。
+
+```powershell
+dotnet user-secrets clear --project Source\LowCodeApp.Server
+```
+
 ## 記事との対応
 
 記事ごとにタグを付けています。記事を書いた時点のコードは、タグを選ぶと見られます。
@@ -165,8 +221,10 @@ CLB Starter の初期設定（`C:\Codeer.LowCode.Blazor.Local\`）とは分け�
 | タグ | 記事 | 内容 |
 | --- | --- | --- |
 | NAK-04 | [型番と個体を分けて、交換・移設の履歴が消えない設備台帳を作る](https://qiita.com/nakano-kenji/items/b9c5a9ec960ef241c2a6) | 型番と個体を分ける設備台帳 |
+| NAK-06 | （公開後に記入） | 機器シミュレーターから計測値を HTTPS で受け取る受信API |
 
 ## 秘密情報について
 
 接続文字列、ライセンスキー、パスワードなどはコミットしていません。
 手元で必要な値は、各自の環境で設定してください。
+受信API のキー（`DeviceApi:Secrets`）は、.NET のユーザーシークレット（`dotnet user-secrets`）に置きます。ユーザーシークレットは、このフォルダの外（`%APPDATA%\Microsoft\UserSecrets\`）に保存されるので、コミットされません。

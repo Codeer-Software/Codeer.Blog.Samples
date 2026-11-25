@@ -18,6 +18,8 @@ using Codeer.LowCode.Blazor.Extras.Server.Web;
 using Codeer.LowCode.Blazor.Extras.Server.AuditLog;
 using Codeer.LowCode.Blazor.Extras.Server.WebApi;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.Authentication;
+using LowCodeApp.Server.Devices;
 
 typeof(CodeBehindSample).ToString();
 ApexChartsServerInitializer.Initialize();
@@ -50,6 +52,12 @@ GlobalFontSettings.FontResolver = new CustomFontResolver(SystemConfig.Instance.F
 if (isJob) return await JobRuntime.RunFromCommandLineAsync(args[1..], JobRuntimeHost.Names, (name, jobArgs) => JobRuntimeHost.RunFromCommandLineAsync(builder.Configuration, name, jobArgs));
 
 builder.UseCookieAuthentication();
+
+//受信API (機器から計測値を受ける。Controllers/DeviceMeasurementsController.cs) のキー認証。既定の方式 (Cookie) は変えない。
+//この方式を求めるのは受信API だけ ([Authorize(AuthenticationSchemes = "DeviceApiKey")])。画面用の API は今までどおり Cookie だけで守る
+builder.Services.Configure<DeviceApiOptions>(builder.Configuration.GetSection("DeviceApi"));
+builder.Services.AddAuthentication()
+    .AddScheme<AuthenticationSchemeOptions, DeviceApiKeyAuthenticationHandler>(DeviceApiKeyAuthenticationHandler.SchemeName, null);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
@@ -115,6 +123,20 @@ else
     app.UseExceptionHandler("/Error");
     app.UseHsts();
 }
+
+//受信API (/api/device) は HTTPS だけで受ける。http で来たら、https に転送 (UseHttpsRedirection) せずに 400 で閉じる。
+//キーが平文で届くのを防ぐものではない (届いたあとに断る)。送り先の設定の誤り (http) を、転送で成功に見せずに失敗させて気づかせるため
+app.Use(async (context, next) =>
+{
+    if (context.Request.Path.StartsWithSegments("/api/device") && !context.Request.IsHttps)
+    {
+        //ログにはパスと HTTPS でなかったことだけを出す (キーの値やヘッダーの中身は出さない)
+        app.Logger.LogWarning("受信API: HTTPS でない要求を拒否しました ({Path}, IsHttps={IsHttps})", context.Request.Path, context.Request.IsHttps);
+        await Results.Problem(statusCode: StatusCodes.Status400BadRequest, title: "HTTPS で送ってください").ExecuteAsync(context);
+        return;
+    }
+    await next();
+});
 
 app.UseHttpsRedirection();
 

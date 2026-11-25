@@ -96,6 +96,34 @@
         }
       },
       {
+        "Title": "計測値",
+        "Module": "Measurement",
+        "ListPageDesign": {
+          "UseNavigateToCreate": false,
+          "ListFieldDesign": {
+            "CanNavigateToDetail": true,
+            "SearchCondition": {
+              "LimitCount": 50,
+              "SortConditions": [
+                {
+                  "Variable": "MeasuredAt.Value",
+                  "IsDescending": true
+                },
+                {
+                  "Variable": "Id.Value",
+                  "IsDescending": true
+                }
+              ],
+              "ModuleName": "Measurement"
+            },
+            "PagerPosition": "Bottom",
+            "CanDelete": true,
+            "Name": "",
+            "TypeFullName": "Codeer.LowCode.Blazor.Repository.Design.ListFieldDesign"
+          }
+        }
+      },
+      {
         "Title": "AppUser",
         "Module": "AppUser"
       }
