@@ -1,0 +1,350 @@
+# AI エージェント向け: Codeer.LowCode.Blazor を動かすまでの実行手順
+
+**この文書は AI エージェント（Claude Code / Codex / GitHub Copilot）が読んで実行するための手順書です。**（利用者向けの注意: この手順は AI が実行します。
+AI の動作は決定的ではなく、ソフトウェアのインストール・ファイルの変更・コマンド実行を伴います。内容を確認のうえ自己責任でご利用ください。
+本リポジトリは LICENSE のとおり AS IS で提供され、AI の操作に起因する損害について Codeer は責任を負いません。） ユーザーが「この URL を見て指示に従って」と言って
+渡してきたら、上から順に実行してください。
+ゴール: ユーザーの作業フォルダに、Codeer.LowCode.Blazor のアプリ（サーバー / クライアント / デザイナ）がビルド済みで、
+**ユーザーのアプリ用の空のデザインプロジェクト**（ログインとユーザー管理だけが入った状態）ができていて、**サーバーがブラウザで開き、デザイナも起動している**状態にする。
+そのあと AI が画面（デザイン）を追加・変更できるようにする（デザインの作業場は `<ROOT>\DesignProjects\Project\`、ホストの C# の作業場は ROOT）。
+**頼まれていないサンプル画面を作らない。** サンプル集（`PatternShowcase`）は、ユーザーが希望したときだけ別のデザインプロジェクトとして追加する。
+
+## 進め方の原則
+
+- **一本道で進める。迷ったらこの文書の既定値を採用する。** ユーザーに聞くのは下の「聞いてよいこと」の 1 つだけ。
+  それ以外（フォルダ名・テンプレート・バリアント・ポート・DB の種類）は聞かずに既定値で進める。**後から変えられることは聞かない**（デザインプロジェクトのフォルダ名はリネームで済む、サンプル集は後から展開できる）
+- **難しいことを聞かない。** 「NuGet のソースをどうしますか」「証明書を信頼しますか」のような質問はしない。この文書に書いてある通りに処理する
+- **失敗したら止まらず、この文書の「うまくいかないとき」を見て自分でリカバリする。** それでも無理なときだけ、ユーザーに「何を」「どう」してほしいか 1 行で頼む
+- **各ステップの終わりに 1 行で進捗を報告する**（「.NET SDK 10 を確認しました」など）。長い説明はしない
+- ユーザーへの応答はユーザーの言語で（日本語で話しかけられたら日本語）
+- **Windows 専用。** macOS / Linux では「デザイナが Windows 専用のため、このセットアップは Windows で行ってください」と伝えて終了する
+- 作業フォルダの外（`C:\` 直下や他のプロジェクト）には何も作らない
+- **許可は最初にまとめて取る。** 書き込みできる範囲やネットワークを制限して動くエージェント（Codex など）では、Step 0 で ROOT が決まったら
+  ROOT・一時フォルダ（`$env:TEMP`）・NuGet のキャッシュ（`%USERPROFILE%\.nuget`）への書き込みと、github.com（api / raw を含む）・nuget.org への通信
+  （.NET SDK が無ければ winget と dot.net も）の許可を一度に求める（途中で 1 つずつ止まらないため）
+- **起動するものは 1 コマンドに 1 つ。** サーバー・デザイナ・ブラウザの起動は別々のコマンドで実行する（承認で止まったものが分かり、他は進められる）。
+  起動が拒否されたら、そのものだけ起動をユーザーに頼み、残りの手順は続ける
+- エージェントは Claude Code（ターミナル・デスクトップアプリの Code タブ・VS Code の拡張）、Codex、GitHub Copilot（VS Code のエージェント・Copilot CLI）のどれでもよい。ユーザーに「〇〇で起動する」と伝えるときは、いま動いているエージェントの言い方にする: Claude Code のターミナルなら「そのフォルダで `claude`」、Codex の CLI なら「そのフォルダで `codex`」、Copilot CLI なら「そのフォルダで `copilot`」、デスクトップアプリ・VS Code なら「そのフォルダを選んで（開いて）新しいセッション（チャット）を始める」の意味。ターミナルかアプリか分からなければ両方の言い方を 1 行ずつ添える
+
+### 聞いてよいこと（この 1 つだけ・既定値を提示して Yes/No で答えられる形で）
+
+1. 不足しているソフト（.NET SDK / VS Code）を **winget でインストールしてよいか**（不足しているものがあるときだけ聞く）
+
+デザインプロジェクトは `DesignProjects\Project\` に **`Empty` から**作る（名前は聞かない。後でフォルダごとリネームできる）。
+サンプル集（`PatternShowcase`）は作らない（ユーザーが後で「サンプル集を展開して」と言えば `CLAUDE.md` の「デザインプロジェクトの切り替え」で足せる）。
+
+アプリはログイン画面のある `Cookie` ホスト 1 種類（認証なしの構成は作らない。前段で認証済みなどの事情で不要なら、セットアップ後に `CLAUDE.md` の「認証を外す」で外す）。
+
+---
+
+## Step 0. 前提の確認
+
+PowerShell で確認する。すべて非対話で判定できる。
+
+| 確認 | コマンド | 判定 |
+|---|---|---|
+| OS | `[System.Environment]::OSVersion.Platform` | `Win32NT` 以外なら終了（上記） |
+| .NET SDK 10 | `dotnet --list-sdks` | `10.` で始まる行があれば OK |
+| Visual Studio 2026 | `& "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -property installationVersion` | `18.` 以上なら「VS あり」。vswhere 自体が無い／エラーなら「VS なし」 |
+| VS Code | `code --version` | VS なしのときだけ気にする |
+| エージェントの作業フォルダ | `Get-ChildItem -Force` | ユーザーがフォルダを指定したらそこ。**空でなければ** サブフォルダ `LowCodeApp` を作ってそこを作業フォルダにする |
+
+以降、作業フォルダの絶対パスを **ROOT** と呼ぶ（例: `C:\Users\taro\work\LowCodeApp`）。パスに日本語や空白が入っていても動くが、
+すべてのコマンドでパスは `"` で囲む。
+
+## Step 1. 不足しているものを入れる
+
+不足があれば、ここで **1 回だけ**まとめて聞く: 「.NET SDK 10 / VS Code を winget でインストールしてよいですか？」（Git は不要）
+（不足しているものだけ列挙する。ユーザーが No なら、何を手でインストールすればよいかを 1 行ずつ伝えて、入ったら続きをやると言って待つ）
+
+```powershell
+winget install --id Microsoft.DotNet.SDK.10 -e --accept-source-agreements --accept-package-agreements
+winget install --id Microsoft.VisualStudioCode -e --accept-source-agreements --accept-package-agreements   # VS が無いときだけ
+```
+
+- インストール後は **PATH がこのシェルに反映されない**ことがある。`dotnet` が見つからなければ新しい PowerShell を起こす代わりに
+  `$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")` を実行してから再確認する。それでも見つからなければ、ユーザーにエージェントを一度終了して開き直してもらい（デスクトップアプリ・VS Code はアプリごと。開き直すまで新しい PATH が渡らない）、続きから再開する
+- **winget が無い環境**（`winget` コマンド自体が見つからない）では .NET SDK を公式スクリプトで入れる（管理者権限不要）:
+  ```powershell
+  Invoke-WebRequest https://dot.net/v1/dotnet-install.ps1 -OutFile "$env:TEMP\dotnet-install.ps1"
+  & "$env:TEMP\dotnet-install.ps1" -Channel 10.0 -InstallDir "$env:LOCALAPPDATA\Microsoft\dotnet"
+  [System.Environment]::SetEnvironmentVariable("Path", $env:Path + ";$env:LOCALAPPDATA\Microsoft\dotnet", "User")
+  [System.Environment]::SetEnvironmentVariable("DOTNET_ROOT", "$env:LOCALAPPDATA\Microsoft\dotnet", "User")
+  $env:Path += ";$env:LOCALAPPDATA\Microsoft\dotnet"; $env:DOTNET_ROOT = "$env:LOCALAPPDATA\Microsoft\dotnet"
+  ```
+  VS Code も winget 無しなら、ユーザーに https://code.visualstudio.com/ からのインストールを頼む（VS があるなら不要）
+
+## Step 2. アプリのフォルダを ROOT に書き出す
+
+このリポジトリ (Starter) は Codeer が保守するテンプレート群の正本で、ユーザーのアプリに要るのはそのうち **Cookie ホスト 1 つ**だけ。
+そのため **リポジトリを ROOT に clone しない**。zip を一時フォルダに展開し、付属ツールの `export-app` で ROOT にアプリの形（`Source\LowCodeApp.sln` と 5 プロジェクト、
+AI 用の文書と設定）だけを書き出す。他のホスト・保守ツール・`.git` は ROOT に残さない。
+
+```powershell
+$tmp = Join-Path $env:TEMP ("clb_" + [Guid]::NewGuid().ToString("N").Substring(0, 8))
+$commit = (Invoke-RestMethod https://api.github.com/repos/Codeer-Software/Codeer.LowCode.Blazor.Starter/commits/main).sha
+Invoke-WebRequest "https://github.com/Codeer-Software/Codeer.LowCode.Blazor.Starter/archive/$commit.zip" -OutFile "$tmp.zip"
+New-Item -ItemType Directory $tmp | Out-Null
+& "$env:SystemRoot\System32\tar.exe" -xf "$tmp.zip" -C $tmp --strip-components=1   # zip の最上位フォルダ (Codeer.LowCode.Blazor.Starter-<コミット>) を省いて展開
+if ($LASTEXITCODE -ne 0) { throw "zip の展開に失敗" }
+$repo = $tmp
+dotnet run --project "$repo\Source\Tools\StarterTool" -- export-app "<ROOT>" --starter-commit $commit      # スマホアプリ (Android/iOS) も要るなら末尾に --maui
+Remove-Item $tmp -Recurse -Force; Remove-Item "$tmp.zip" -Force
+```
+
+展開は `Expand-Archive` ではなく Windows 標準の `tar.exe` で、zip の最上位フォルダを省く（`--strip-components=1`）。最上位フォルダ名にはコミットの値（40 文字）が入るため、
+そのまま展開すると一時フォルダの深さしだいでパスが Windows の上限（260 文字）を超えて失敗する。`tar` を名前だけで呼ぶと Git for Windows の tar（zip を読めない）を拾うことがあるので、場所を指定して呼ぶ。
+
+`--starter-commit` は書き出し元の版を `<ROOT>\AIForDeveloper\starter-origin.json` に残す（後で最新化するとき、その版と比べて
+ユーザーが変えた箇所とテンプレートが変わった箇所を見分ける。[claude-code-update.md](claude-code-update.md)）。
+`api.github.com` に届かないとき（社内プロキシ等）は `$commit` を取らずに `archive/refs/heads/main.zip` を使い、`--starter-commit` を付けない。
+
+書き出し後、`<ROOT>\Source\LowCodeApp.sln`、`<ROOT>\CLAUDE.md`、`<ROOT>\AIForDeveloper\claude-code-setup.md` があることを確認する。
+**以降はこの手順書の ROOT にあるコピーを読んで続ける**（パスがアプリの配置に書き換わっている。Web 上の原本は Step 2 までの案内）。
+**このフォルダが以後の作業場所。** AI の知識源は 3 つ: ROOT の `CLAUDE.md`（ホスト側の説明）、`AIForDeveloper/`（この手順書と、Step 5 で
+生成するホスト開発のリファレンス）、Step 7 で展開される `DesignProjects\Project\AIForDesigner/`（デザインの作り方）。
+
+> ユーザー自身のリポジトリにしたい場合は `git init` すればよい（zip から書き出すので `.git` は無い。聞かれたときだけ案内する。聞かない）。
+
+## Step 3. 使う値を固定する（質問はしない）
+
+| 名前 | 値 |
+|---|---|
+| `Project` | `Project`（デザインプロジェクトのフォルダ名。`DesignProjects\Project\`。後からリネームしてよい） |
+| `<TEMPLATE>` | `Empty`（空のプロジェクト。AppUser モジュールとログインだけ。初期ユーザー `admin` / `admin`） |
+| `<URL>` | `https://localhost:7137` |
+
+ソリューションは `<ROOT>\Source\LowCodeApp.sln`。
+## Step 4. ローカルの置き場を作り、appsettings を書き換える
+
+サーバーの設定 `<ROOT>\Source\LowCodeApp.Server\appsettings.Development.json` は、パスが
+`C:\Codeer.LowCode.Blazor.Local\...` という固定パスになっている。データソースは 2 種類に分けて考える:
+
+- **`Main`** = このアプリ（Step 6 で作るデザインプロジェクト）の DB。**ROOT 配下**（`<ROOT>\Local\Data\main.db`）に置く。別のアプリと DB を取り合わない
+- **それ以外**（`appsettings.json` の `DataSources` に最初から並んでいるもの。名前はテンプレートの版で変わる）= デザイナのテンプレート用。**`C:\Codeer.LowCode.Blazor.Local\Data` のまま触らない。**
+  デザイナの GUI でテンプレートから作ったデザインプロジェクトはこの場所に DB を置き `designer.settings.Development.json` もここを指すので、そのままこのサーバーで動く
+
+デザインの配信先・ファイル保存先・フォントもこのアプリ固有なので ROOT 配下に向ける（別のアプリと `App.zip` を取り合わないため）。
+
+1. フォルダを作る: `<ROOT>\Local\Data`、`<ROOT>\Local\Designs`、`<ROOT>\Local\Storages`、`C:\Codeer.LowCode.Blazor.Local\Data`（`<ROOT>\Local\Font` は Step 2 の export-app が作り、PDF 出力用の Noto Sans JP（`NotoSansJP.ttf` / `NotoSansJP#b.ttf`、SIL Open Font License）が入っている）
+2. `appsettings.Development.json` を編集する（JSON として読んで書き戻す。`\` は JSON 内で `\\`）:
+   - `ConnectionStrings` に **`Main` を追加**: `"Main": "Data Source=<ROOT>\\Local\\Data\\main.db;"`
+   - `ConnectionStrings` の他の値は **変えない**（`Data Source=C:\\Codeer.LowCode.Blazor.Local\\Data\\<ファイル名>` のまま）
+   - `FileSystemStorages[*].Directory` → `<ROOT>\\Local\\Storages`
+   - `DesignFileDirectory` → `<ROOT>\\Local\\Designs`
+   - `FontFileDirectory` → `<ROOT>\\Local\\Font`
+   - 他の項目は触らない
+3. 同じフォルダの `appsettings.json` の `DataSources` 配列に **`{ "Name": "Main", "DataSourceType": "SQLite" }` を追加**する（既存の要素は触らない。`Main` はこのアプリを CCFDev で作るときだけ足すもので、リポジトリや Visual Studio のテンプレートには入っていない）
+4. `appsettings.json` を読み、**`DataSourceName` でデータソースを指す配列**（例: アップロードの一時ファイル表 `TemporaryFileTableInfo`）を探す。既存のデータソースの項目が
+   あれば、**同じ形で `Main` の項目を足す**（表名・列名は既存の項目と同じにする。テンプレートの DB には同じ表が入っている）。どの設定がデータソースごとに要るかは
+   そのときの `appsettings.json` で決まるので、ここに無い名前の配列でも同じ扱いにする。既存の項目が 1 つも無い設定は足さない
+
+テンプレート用のデータソース名と DB ファイル名は、デザイナの GUI も `template-create --data-dir` も同じものを使うので、どのテンプレートでデザインプロジェクトを
+作ってもサーバー側の追加設定は要らない。DB は SQLite（ファイル）なので DB サーバーのインストールは不要。PostgreSQL 等に変えたいという話が出たら、
+セットアップ完了後に `CLAUDE.md` の「appsettings リファレンス」を見て対応する（今はやらない）。
+
+## Step 5. ビルド
+
+```powershell
+dotnet build "<ROOT>\Source\LowCodeApp.sln"
+```
+
+- 初回は NuGet の復元で数分かかる。成功の判定は**終了コードが 0**（`$LASTEXITCODE`）であること。出力の文言（英語の `Build succeeded` / 日本語の「ビルドに成功しました」など）は表示言語と SDK の版で変わるので、文言では判定しない
+- 警告（`warning`）は無視してよい
+- 成功すると、デザイナの exe が `<ROOT>\Source\LowCodeApp.Designer\bin\Debug\net10.0-windows\LowCodeApp.Designer.exe` にできる。以降 **DESIGNER_EXE** と呼ぶ
+
+続けて、ホスト（C#）を触るときに AI が読むリファレンスを生成する。デザイナ exe には GUI を出さない CLI（headless）があり、
+**GUI サブシステムの exe なので PowerShell の `&` では待たない。必ず `Start-Process -Wait` で呼び、結果は `--out` の JSON ファイルで受け取る**（以降の Step も同じ）:
+
+```powershell
+Start-Process -FilePath "<DESIGNER_EXE>" -Wait -ArgumentList @(
+  "developer-workspace", "<ROOT>", "--out", "<ROOT>\Local\developer-workspace.json")
+Get-Content "<ROOT>\Local\developer-workspace.json"
+```
+
+`<ROOT>\AIForDeveloper\_specs\HostCustomization.md` などができる（`_` で始まるものは生成物・gitignore 済み。この手順書などコミット済みの文書には触らない）。
+同時に、雛形 `<ROOT>\AIForDeveloper\settings.local.json.sample` にデザイナ exe のパスを入れた `<ROOT>\.claude\settings.local.json`（許可リストと、`DesignProjects\*\` の各ワークスペースを最新化するフック。GitHub Copilot もこのフックを読む）と、
+同じ内容の Codex 用 `<ROOT>\.codex\hooks.json`・`<ROOT>\.codex\rules\codeer-lowcode.rules` ができる。フックのスクリプトは `<ROOT>\AIForDeveloper\hooks\` にある（コミット済み）。
+デザイナ exe の場所が変わったとき（ビルド構成の変更・フォルダの移動）や、パッケージを更新したときは同じコマンドを実行し直す（既存の `settings.local.json` は hooks 節と CLI 許可だけが更新され、ユーザーが足した許可は残る）。判定: JSON に `"error"` が無く `written` に `HostCustomization.md` が含まれる。
+
+> 許可とフックの設定は **次のセッションから効く**。今のセッションではデザイナの CLI のたびに確認が出るが、そのまま続けてよい（再起動は要らない）。
+> Codex なら完了メッセージで「このフォルダを信頼済みのプロジェクトにしてください（`.codex\` の設定は信頼済みのときだけ読まれる）。フックは `/hooks` で内容を確認して信頼すると動きます」と伝える。
+
+## Step 6. デザインプロジェクトをテンプレートから作る
+
+デザインプロジェクトは **`<ROOT>\DesignProjects\<名前>\`** に 1 つずつ置く。`design\` がデザイン本体（デザイナが開く・デプロイされる範囲）で、
+隣に `Project.md` / `ddl\` / `docs\`（Step 7 で生成）が並ぶ。ユーザーのアプリは `DesignProjects\Project\` に **`Empty` から**作る。
+
+**実行前に 1 行予告する**: 「デザインプロジェクトを `DesignProjects\Project` に空のプロジェクトから作ります（ログインとユーザー管理だけの状態です）」。
+サンプル集はここでは作らない。
+
+
+```powershell
+Start-Process -FilePath "<DESIGNER_EXE>" -Wait -ArgumentList @(
+  "template-create", "--name", "<TEMPLATE>",
+  "--out-dir", "<ROOT>\DesignProjects\Project\design",
+  "--data-dir", "<ROOT>\Local\Data",
+  "--deploy-dir", "<ROOT>\Local\Designs",
+  "--out", "<ROOT>\Local\template-create.json")
+Get-Content "<ROOT>\Local\template-create.json"
+```
+
+これで `<ROOT>\DesignProjects\Project\design` にデザインプロジェクト（`app.clprj` / `Modules` / `PageFrames` …）が展開され、テンプレート付属の DB
+（SQLite。`app_users` テーブルと admin が入っている）が `<ROOT>\Local\Data` に置かれ、デプロイ先が `<ROOT>\Local\Designs` に設定される。
+判定: JSON に `"error"` が無く、`deploy.success` が `true`。置いた DB ファイルは `dataFiles`、デザインの中で付け替えたデータソース名は `rewrittenConnections` に出る。
+
+テンプレートのデータソース名と DB ファイル名はテンプレートの版で変わるので、**`template-create.json` から読む**（名前を決め打ちしない）。
+それをこのアプリ用の **`Main`**（DB ファイル `main.db`）に付け替える。テンプレート用の元の DB は、デザイナの GUI で作るプロジェクトのために
+`C:\Codeer.LowCode.Blazor.Local\Data` 側に残っているので、ここでは触らない。
+データソースが 1 つでないテンプレートのときは付け替えずに止め、`rewrittenConnections` と `dataFiles` をユーザーに伝える（`Empty` は 1 つ）:
+
+```powershell
+$design = "<ROOT>\DesignProjects\Project\design"
+$utf8 = New-Object System.Text.UTF8Encoding $false
+$tc = Get-Content "<ROOT>\Local\template-create.json" -Raw -Encoding UTF8 | ConvertFrom-Json
+if ($tc.error) { throw $tc.error }
+$from = @($tc.rewrittenConnections | Where-Object { $_ }); $files = @($tc.dataFiles | Where-Object { $_ })
+if ($from.Count -ne 1 -or $files.Count -ne 1) { throw "データソースが 1 つではない: $($from -join ', ') / $($files -join ', ')" }
+Rename-Item (Join-Path "<ROOT>\Local\Data" $files[0]) "main.db"
+Get-ChildItem $design -Recurse -Filter *.json | ForEach-Object {
+  $t = [IO.File]::ReadAllText($_.FullName)
+  $u = $t.Replace("""$($from[0])""", '"Main"').Replace($files[0], 'main.db')
+  if ($u -ne $t) { [IO.File]::WriteAllText($_.FullName, $u, $utf8) }
+}
+```
+
+テンプレートの DB には、このデザインが使わないサンプル表が入っていることがある。**使っている表だけを残す**。使っている表 = モジュールの `DbTable` と、
+サーバーの `appsettings.json` でデータソースごとに書く設定（`DataSourceName` と `Table` を持つ項目。Step 4 の一時ファイル表など）の `Table`。
+DB にある表はデザイナの `sql` で一覧を取る（SQL は `--file` で渡す。`Start-Process` の `-ArgumentList` は空白を含む要素を引用しないので、`--query` に文を直接渡すと最初の語で切れる）:
+
+```powershell
+# モジュールの JSON は名前が空のキー (既定のレイアウト) を持ち ConvertFrom-Json で読めないので、DbTable の値だけ拾う
+$used = @(Get-ChildItem "$design\Modules" -Recurse -Filter *.mod.json | Select-String -Pattern '"DbTable":\s*"([^"]+)"' | ForEach-Object { $_.Matches[0].Groups[1].Value })
+$server = Get-Content "<ROOT>\Source\LowCodeApp.Server\appsettings.json" -Raw -Encoding UTF8 | ConvertFrom-Json
+$used += @($server.PSObject.Properties.Value | ForEach-Object { $_ } | Where-Object { $_.DataSourceName -and $_.Table } | ForEach-Object { $_.Table })
+$used = @($used | Where-Object { $_ } | Sort-Object -Unique)
+if ($used.Count -eq 0) { throw "使っている表を読めていない (モジュールの DbTable が 0 件)。表は消さずに止める" }
+[IO.File]::WriteAllText("<ROOT>\Local\tables.sql", "SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%';", $utf8)
+Start-Process -FilePath "<DESIGNER_EXE>" -Wait -ArgumentList @(
+  "sql", $design, "--datasource", "Main", "--file", "<ROOT>\Local\tables.sql", "--out", "<ROOT>\Local\tables.json")
+$tables = @((Get-Content "<ROOT>\Local\tables.json" -Raw -Encoding UTF8 | ConvertFrom-Json).results[0].rows | ForEach-Object { $_.name })
+$drop = @($tables | Where-Object { $used -notcontains $_ })
+"使っている表: $($used -join ', ') / 消す表: $($drop -join ', ')"
+if ($drop.Count -gt 0) {
+  [IO.File]::WriteAllText("<ROOT>\Local\drop_samples.sql", (($drop | ForEach-Object { "DROP TABLE IF EXISTS ""$_"";" }) -join " "), $utf8)
+  Start-Process -FilePath "<DESIGNER_EXE>" -Wait -ArgumentList @(
+    "sql", $design, "--datasource", "Main", "--file", "<ROOT>\Local\drop_samples.sql", "--out", "<ROOT>\Local\sql.json")
+}
+# データソース名を変えたので App.zip を作り直す
+Start-Process -FilePath "<DESIGNER_EXE>" -Wait -ArgumentList @(
+  "deploy", $design, "--out", "<ROOT>\Local\deploy.json")
+Get-Content "<ROOT>\Local\deploy.json"
+```
+
+書き換わるのは、デザインの中で元のデータソース名と DB ファイル名を書いているファイル（`Empty` なら `design\designer.settings.json`・
+`design\designer.settings.Development.json`・`design\Modules\AppUser.mod.json` の 3 つ）。判定: `tables.json`・`sql.json`（消した表があるとき）・`deploy.json` に
+`"error"` が無く、`deploy.json` の `success` が `true`、`<ROOT>\Local\Designs\App.zip` が存在する。
+以後このアプリのモジュールはデータソース `Main`（`<ROOT>\Local\Data\main.db`）に作る。
+
+## Step 7. AI 用ワークスペースを展開する（デザインを AI で編集できるようにする）
+
+ワークスペース＝デザインプロジェクト 1 つ分のフォルダ `<ROOT>\DesignProjects\Project`。その中の `design` がデザイン本体:
+
+```powershell
+Start-Process -FilePath "<DESIGNER_EXE>" -Wait -ArgumentList @(
+  "ai-workspace", "<ROOT>\DesignProjects\Project", "--project", "design", "--out", "<ROOT>\Local\ai-workspace.json")
+Get-Content "<ROOT>\Local\ai-workspace.json"
+```
+
+`<ROOT>\DesignProjects\Project\` に `CLAUDE.md`（デザイン作業の規約）、`AIForDesigner/`（デザインの作り方・仕様・カタログ。**自動生成、手で編集しない**）、
+`Project.md`（このデザイン固有のメモ）、`ddl/`、`docs/`、`LocalEnvironment.md`、`.claude/settings.local.json`（デザイナ exe のパスを焼き込んだ許可リストとフック）、
+`AGENTS.md`（Codex / GitHub Copilot の入口）、`.codex/`（Codex 用の同じ許可とフック）ができる。
+ROOT の `CLAUDE.md`（このリポジトリのもの）には触らない。
+
+判定: JSON の `aiRefresh` が `ok`。`<ROOT>\DesignProjects\Project\AIForDesigner\CLAUDE.md` と `_field_catalog.md` が存在する。
+
+> デザインだけを扱う人は **`<ROOT>\DesignProjects\Project` でエージェントを起動**する（ホストのソースが視界に入らない）。ROOT で起動したエージェントは
+> ホスト（C#）とデザインの両方を扱える（Step 5 の許可・フックの設定に同じものがある）。完了メッセージでこの使い分けを伝える。
+
+## Step 8. HTTPS 開発証明書
+
+```powershell
+dotnet dev-certs https --check --trust
+```
+
+**終了コードが 0** なら、信頼済みの証明書がある（OK）。出力の文言は SDK の版で変わる（例: `A valid certificate was found` / `2 trusted certificates were found`）ので、文言では判定しない。0 以外なら `dotnet dev-certs https --trust` を実行する。
+**Windows がセキュリティ警告のダイアログを出す**ので、ユーザーに「証明書のダイアログが出たら『はい』を押してください」と伝える。
+押されなくても http（`<URL>` の代わりに `http://localhost:5085`）で動くので、そこで詰まらない。
+
+## Step 9. サーバーとデザイナを起動する
+
+サーバー（別プロセス・バックグラウンド。ブラウザは `launchSettings.json` の設定で自動で開く）:
+
+```powershell
+Start-Process -FilePath "dotnet" -WorkingDirectory "<ROOT>\Source\LowCodeApp.Server" -ArgumentList @(
+  "run", "--project", "<ROOT>\Source\LowCodeApp.Server", "--launch-profile", "https", "--no-build")
+```
+
+デザイナ（デザインプロジェクトのフォルダを引数に渡すと、そのプロジェクトを開いた状態で起動する）:
+
+```powershell
+Start-Process -FilePath "<DESIGNER_EXE>" -ArgumentList @("<ROOT>\DesignProjects\Project\design")
+```
+
+起動確認: 20〜60 秒待ってから `Invoke-WebRequest <URL> -UseBasicParsing -SkipCertificateCheck` が 200 を返せば OK
+（PowerShell 5.1 には `-SkipCertificateCheck` が無い。その場合は `http://localhost:<httpポート>` で確認する）。
+ブラウザが開かなければ `Start-Process "<URL>"` で開く。
+
+- ログイン画面が出る。`admin` / `admin`（初回起動でユーザーが 0 件のとき作られる初期ユーザー）。ログイン後はホームと「AppUser」（ユーザー管理）だけの空のアプリ
+- デザイナ右上に「トライアル」と表示されるのは正常（ライセンス登録は不要。試用できる）
+
+**起動がうまくいかないときはユーザーにやってもらってよい**: 「Visual Studio で `Source\LowCodeApp.sln` を開き、
+`LowCodeApp.Server` を F5 で起動してください（デザイナは `LowCodeApp.Designer` を右クリック > デバッグ > 新しいインスタンスを開始）」。
+VS が無いときは VS Code（次項）。
+
+## Step 10. VS 2026 が無いとき: VS Code で開ける状態にする
+
+ROOT に `.vscode/`（`launch.json` / `tasks.json` / `extensions.json`）が同梱されている（このリポジトリの一部）。
+`launch.json` の Designer 構成は `DesignProjects/Project/design` を開く（この手順の値と同じ。フォルダをリネームしたら `launch.json` も合わせる）。
+
+1. 拡張機能: `code --install-extension ms-dotnettools.csdevkit`（VS Code があるとき。無ければ `extensions.json` の推奨が VS Code 側で提示される）
+2. 開く: `code "<ROOT>"`
+3. 使い方をユーザーに伝える: 「実行とデバッグ」ビューで **Server** を選んで F5 でサーバー、**Designer** でデザイナが起動する。
+   `Ctrl+Shift+B` でビルド
+
+## Step 11. 完了メッセージ
+
+以下を短く伝える（この文書の URL や内部手順は説明しない）:
+
+- アプリの URL（`<URL>`）とログイン情報（`admin` / `admin`）。公開する前に AppUser 画面で admin のパスワードを変えること
+- デザインプロジェクトの場所（`<ROOT>\DesignProjects\Project\design`）と、今はログインとユーザー管理だけの空の状態であること。デザイナで編集 → メニューの「ファイル > デプロイ」（Ctrl+F5）でサーバーに反映されること（サーバーの再起動は不要。スクリプトを変えたときだけ再起動）
+- **次にできること**: 「作りたいアプリの内容を教えてください。例:『商品マスタと受注入力の画面を作って』。デザインだけを扱うなら `DesignProjects\Project` フォルダで起動するとホストのソースが視界に入らず身軽です」
+- デザインプロジェクトのフォルダ名は `Project`。変えたければフォルダをリネームすればよい（`launch.json` の Designer 構成のパスも合わせる）こと
+- 参考実装は AI が `AIForDesigner\_samples\` から読めるので、サンプル集を画面で見たくなったら「サンプル集を展開して」と言えばよいこと
+- ソースコード（C#）も同じフォルダ（ROOT）にあり、必要なら ROOT でエージェントを起動して変更できるが、**ふつうの画面追加はデザインだけで済む**こと
+- どこまで確かめたか: ビルド・サーバーの応答・デザイナの起動のうち確認できたもの、できなかったもの（ユーザーに起動を頼んだもの、HTTPS の証明書を信頼できず HTTP で確認したもの等）を 1 行ずつ
+- Codex で動いているときだけ: このフォルダ（プロジェクト）を信頼し、`/hooks` でフックの中身を確認して信頼すること（しないとデザイナの CLI のたびに確認が出て、`AIForDesigner\` も自動で最新にならない）
+- GitHub Copilot で動いているときだけ: デザイナの CLI のたびに承認が出るので、減らしたければ VS Code のユーザー設定に自動承認を足せること。足す中身は `DesignProjects\<デザイン名>\AGENTS.md` の「GitHub Copilot」の JSON（exe のパスを埋めたものを見せる。埋め方の注意もそこにある）
+
+---
+
+## うまくいかないとき
+
+| 症状 | 対処 |
+|---|---|
+| `dotnet build` で `NU1101` / `Unable to find package Codeer.LowCode.Blazor...` | nuget.org に到達できていない。プロキシ環境なら `$env:HTTPS_PROXY` を確認。社内 NuGet フィードしか使えない環境はユーザーに nuget.org のミラーがあるか聞く |
+| `dotnet build` で `NETSDK1045`（必要な SDK が無い） | .NET SDK 10 が入っていない。Step 1 をやり直す |
+| ビルドは通るが `LowCodeApp.Designer.exe` が無い | `Source\LowCodeApp.Designer\bin\Debug\net10.0-windows\` を再確認。無ければ `dotnet build "<ROOT>\Source\LowCodeApp.Designer\LowCodeApp.Designer.csproj"` |
+| `template-create` の JSON に `template not found` | `Start-Process -FilePath "<DESIGNER_EXE>" -Wait -ArgumentList @("template-list","--out","<ROOT>\Local\tl.json")` で一覧を出し `folderName` を確認する |
+| `template-create` の JSON に `--out-dir must be empty` | `<ROOT>\DesignProjects\Project\design` に既にファイルがある。中身を確認し、ユーザーの物でなければ削除して再実行 |
+| 頼まれていないサンプル（PatternShowcase 等）を作ってしまった | デザイナを終了 → `DesignProjects\PatternShowcase` を削除 → `C:\Codeer.LowCode.Blazor.Local\Data\sqlite_patterns_v*.db` を削除 → ユーザーのアプリを `deploy "<ROOT>\DesignProjects\Project\design"` でデプロイし直す（App.zip が上書きされる）。ユーザーに何を消したか報告する |
+| `template-create` や `ai-workspace` を実行するとデザイナの **ウィンドウが開いて** JSON ができない | デザイナのパッケージが古い（`template-create` は Codeer.LowCode.Blazor.Designer 1.3.24 以降）。`Source\LowCodeApp.Designer\LowCodeApp.Designer.csproj` の `Codeer.LowCode.Blazor.Designer` の版を確認する。このリポジトリを最新から取得していれば起きない |
+| サーバー起動で `address already in use` | ポートが使用中。`launchSettings.json` の `applicationUrl` のポート番号を空いている番号に変えて再起動し、完了メッセージの URL も合わせる |
+| ブラウザで開くと真っ白／`design not found` | `<ROOT>\Local\Designs\App.zip` が無い。Step 6 のデプロイが失敗している。`Start-Process -FilePath "<DESIGNER_EXE>" -Wait -ArgumentList @("deploy","<ROOT>\DesignProjects\Project\design","--out","<ROOT>\Local\deploy.json")` で作り直す |
+| `developer-workspace` / `ai-workspace` で `--out` の JSON ができない（ウィンドウが開く） | デザイナのパッケージが古い（`developer-workspace` は Codeer.LowCode.Blazor.Designer.Standard 0.8.3 以降）。このリポジトリを最新から取得していれば起きない |
+| ログインできない（Cookie） | サンプル DB に `admin` がいるはず。`appsettings.Development.json` の `ConnectionStrings.Main` が `<ROOT>\Local\Data\main.db` を指しているか、そのファイルが存在するか、デザインの `designer.settings.Development.json` も同じパスかを確認 |
+| `dotnet build` が `MSB4166`（子ノードが途中で終了）や、はっきりしたエラー無しで失敗する | 並列ビルドを止めて再実行する: `dotnet build "<ROOT>\Source\LowCodeApp.sln" -m:1 -nodeReuse:false`（以降のビルドも同じオプションで） |
+| `winget` が見つからない | Step 1 の dotnet-install.ps1 経路 |
+| PowerShell で `&` でデザイナ exe を呼ぶと即戻って何も起きない | 正常（GUI サブシステム）。必ず `Start-Process -Wait` + `--out` |
+| Excel / PDF 出力でフォントのエラー | サーバーの `appsettings.Development.json` の `FontFileDirectory` が指すフォルダ（Step 4 で `<ROOT>\Local\Font` にしている）に、PDF 出力で使うフォント（export-app が置く Noto Sans JP の `.ttf`）があるか確認する。無ければ Step 2 の zip をもう一度展開し、その中の Common ホストの `Font` フォルダからコピーする（ROOT にはテンプレートの元のフォルダは無い） |
+

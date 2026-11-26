@@ -1,0 +1,17 @@
+{
+  "DataSources": [
+    {
+      "Name": "Main",
+      "DataSourceType": "SQLite",
+      "AllowCliSqlAccess": true
+    },
+    {
+      "Name": "Legacy",
+      "DataSourceType": "SQLServer",
+      "AllowCliSqlAccess": true
+    }
+  ],
+  "FileStorageNames": [
+    "Local"
+  ]
+}

@@ -1,0 +1,786 @@
+{
+  "IsApplicationRoot": true,
+  "Priority": 0,
+  "Name": "Main",
+  "Description": "",
+  "Left": {
+    "IsVisible": true,
+    "Home": {
+      "Type": "Text",
+      "Text": "Home",
+      "Icon": "",
+      "ResourcePath": ""
+    },
+    "Links": [
+      {
+        "Title": "AppUser",
+        "Icon": "",
+        "IconType": "Font",
+        "HideTitle": false,
+        "ModulePageType": "Auto",
+        "ModuleUrlSegment": "",
+        "ActiveModuleSegments": [],
+        "PageFrame": "",
+        "Module": "AppUser",
+        "Id": "",
+        "Parameters": "",
+        "ListPageDesign": {
+          "SearchLayoutName": "",
+          "UserUrlParameter": true,
+          "PageTitle": "",
+          "HeaderTitle": "",
+          "CanBulkDataUpdate": false,
+          "CanBulkDataDownload": false,
+          "UseSubmitButton": false,
+          "UseNavigateToCreate": true,
+          "ListFieldDesign": {
+            "LayoutName": "",
+            "CanNavigateToDetail": true,
+            "NavigateModuleUrlSegment": "",
+            "CanCustomizeColumns": false,
+            "FixedColumnCount": 0,
+            "ApplyBackgroundToBoxInput": false,
+            "DisplayName": "",
+            "SearchCondition": {
+              "LimitCount": 50,
+              "SelectFields": [],
+              "SortConditions": [],
+              "SortFieldVariable": "",
+              "SortDescending": false,
+              "ModuleName": ""
+            },
+            "DbColumn": "",
+            "IsInMemoryPaging": false,
+            "PagingGroupField": "",
+            "PagingGroupRowCount": 0,
+            "ConfirmBeforePageChange": true,
+            "PagerPosition": "Top",
+            "PagerAlignment": "Right",
+            "ReplaceMode": "None",
+            "DeleteTogether": false,
+            "CanCreate": false,
+            "CanUpdate": false,
+            "CanDelete": true,
+            "CanUserSort": true,
+            "CanSelect": false,
+            "UseIndexSort": false,
+            "OnDataChanged": "",
+            "OnSearchDataChanged": "",
+            "OnSelectedIndexChanged": "",
+            "OnSelectedIndexChanging": "",
+            "OnDoubleClickRow": "",
+            "Name": "",
+            "IgnoreModification": false,
+            "OnValidateInput": "",
+            "IsFocusSkip": false,
+            "NextFocusField": "",
+            "OnFocusMoving": "",
+            "TypeFullName": "Codeer.LowCode.Blazor.Repository.Design.ListFieldDesign"
+          }
+        },
+        "DetailPageDesign": {
+          "PageTitle": "",
+          "LayoutName": "",
+          "UrlParameter": ""
+        }
+      },
+      {
+        "Title": "状態の列を足す前/発注予定",
+        "Icon": "",
+        "IconType": "Font",
+        "HideTitle": false,
+        "ModulePageType": "Auto",
+        "ModuleUrlSegment": "Before",
+        "ActiveModuleSegments": [],
+        "PageFrame": "",
+        "Module": "発注予定_変更前",
+        "Id": "",
+        "Parameters": "",
+        "ListPageDesign": {
+          "SearchLayoutName": "",
+          "UserUrlParameter": true,
+          "PageTitle": "",
+          "HeaderTitle": "",
+          "CanBulkDataUpdate": false,
+          "CanBulkDataDownload": false,
+          "UseSubmitButton": false,
+          "UseNavigateToCreate": true,
+          "ListFieldDesign": {
+            "LayoutName": "",
+            "CanNavigateToDetail": true,
+            "NavigateModuleUrlSegment": "",
+            "CanCustomizeColumns": false,
+            "FixedColumnCount": 0,
+            "ApplyBackgroundToBoxInput": false,
+            "DisplayName": "",
+            "SearchCondition": {
+              "LimitCount": 50,
+              "SelectFields": [],
+              "SortConditions": [],
+              "SortFieldVariable": "",
+              "SortDescending": false,
+              "ModuleName": ""
+            },
+            "DbColumn": "",
+            "IsInMemoryPaging": false,
+            "PagingGroupField": "",
+            "PagingGroupRowCount": 0,
+            "ConfirmBeforePageChange": true,
+            "PagerPosition": "Top",
+            "PagerAlignment": "Right",
+            "ReplaceMode": "None",
+            "DeleteTogether": false,
+            "CanCreate": false,
+            "CanUpdate": false,
+            "CanDelete": true,
+            "CanUserSort": true,
+            "CanSelect": false,
+            "UseIndexSort": false,
+            "OnDataChanged": "",
+            "OnSearchDataChanged": "",
+            "OnSelectedIndexChanged": "",
+            "OnSelectedIndexChanging": "",
+            "OnDoubleClickRow": "",
+            "Name": "",
+            "IgnoreModification": false,
+            "OnValidateInput": "",
+            "IsFocusSkip": false,
+            "NextFocusField": "",
+            "OnFocusMoving": "",
+            "TypeFullName": "Codeer.LowCode.Blazor.Repository.Design.ListFieldDesign"
+          }
+        },
+        "DetailPageDesign": {
+          "PageTitle": "",
+          "LayoutName": "",
+          "UrlParameter": ""
+        }
+      },
+      {
+        "Title": "状態の列を足したあと/発注予定",
+        "Icon": "",
+        "IconType": "Font",
+        "HideTitle": false,
+        "ModulePageType": "Auto",
+        "ModuleUrlSegment": "",
+        "ActiveModuleSegments": [],
+        "PageFrame": "",
+        "Module": "発注予定",
+        "Id": "",
+        "Parameters": "",
+        "ListPageDesign": {
+          "SearchLayoutName": "",
+          "UserUrlParameter": true,
+          "PageTitle": "",
+          "HeaderTitle": "",
+          "CanBulkDataUpdate": false,
+          "CanBulkDataDownload": false,
+          "UseSubmitButton": false,
+          "UseNavigateToCreate": true,
+          "ListFieldDesign": {
+            "LayoutName": "",
+            "CanNavigateToDetail": true,
+            "NavigateModuleUrlSegment": "",
+            "CanCustomizeColumns": false,
+            "FixedColumnCount": 0,
+            "ApplyBackgroundToBoxInput": false,
+            "DisplayName": "",
+            "SearchCondition": {
+              "LimitCount": 50,
+              "SelectFields": [],
+              "SortConditions": [],
+              "SortFieldVariable": "",
+              "SortDescending": false,
+              "ModuleName": ""
+            },
+            "DbColumn": "",
+            "IsInMemoryPaging": false,
+            "PagingGroupField": "",
+            "PagingGroupRowCount": 0,
+            "ConfirmBeforePageChange": true,
+            "PagerPosition": "Top",
+            "PagerAlignment": "Right",
+            "ReplaceMode": "None",
+            "DeleteTogether": false,
+            "CanCreate": false,
+            "CanUpdate": false,
+            "CanDelete": true,
+            "CanUserSort": true,
+            "CanSelect": false,
+            "UseIndexSort": false,
+            "OnDataChanged": "",
+            "OnSearchDataChanged": "",
+            "OnSelectedIndexChanged": "",
+            "OnSelectedIndexChanging": "",
+            "OnDoubleClickRow": "",
+            "Name": "",
+            "IgnoreModification": false,
+            "OnValidateInput": "",
+            "IsFocusSkip": false,
+            "NextFocusField": "",
+            "OnFocusMoving": "",
+            "TypeFullName": "Codeer.LowCode.Blazor.Repository.Design.ListFieldDesign"
+          }
+        },
+        "DetailPageDesign": {
+          "PageTitle": "",
+          "LayoutName": "",
+          "UrlParameter": ""
+        }
+      },
+      {
+        "Title": "状態の列を足したあと/品番未確認",
+        "Icon": "",
+        "IconType": "Font",
+        "HideTitle": false,
+        "ModulePageType": "Auto",
+        "ModuleUrlSegment": "NoCodeYet",
+        "ActiveModuleSegments": [],
+        "PageFrame": "",
+        "Module": "発注予定",
+        "Id": "",
+        "Parameters": "",
+        "ListPageDesign": {
+          "SearchLayoutName": "",
+          "UserUrlParameter": true,
+          "PageTitle": "",
+          "HeaderTitle": "",
+          "CanBulkDataUpdate": false,
+          "CanBulkDataDownload": false,
+          "UseSubmitButton": false,
+          "UseNavigateToCreate": true,
+          "ListFieldDesign": {
+            "LayoutName": "",
+            "CanNavigateToDetail": true,
+            "NavigateModuleUrlSegment": "",
+            "CanCustomizeColumns": false,
+            "FixedColumnCount": 0,
+            "ApplyBackgroundToBoxInput": false,
+            "DisplayName": "",
+            "SearchCondition": {
+              "LimitCount": 50,
+              "SelectFields": [],
+              "SortConditions": [],
+              "SortFieldVariable": "",
+              "SortDescending": false,
+              "ModuleName": "",
+              "Condition": {
+                "IsOrMatch": false,
+                "IsNot": false,
+                "Children": [
+                  {
+                    "SearchTargetVariable": "品番確認済み.Value",
+                    "Comparison": "Equal",
+                    "Value": {
+                      "Value": false,
+                      "TypeFullName": "Codeer.LowCode.Blazor.Repository.BooleanValue"
+                    },
+                    "TypeFullName": "Codeer.LowCode.Blazor.Repository.Match.FieldValueMatchCondition"
+                  }
+                ],
+                "TypeFullName": "Codeer.LowCode.Blazor.Repository.Match.MultiMatchCondition"
+              }
+            },
+            "DbColumn": "",
+            "IsInMemoryPaging": false,
+            "PagingGroupField": "",
+            "PagingGroupRowCount": 0,
+            "ConfirmBeforePageChange": true,
+            "PagerPosition": "Top",
+            "PagerAlignment": "Right",
+            "ReplaceMode": "None",
+            "DeleteTogether": false,
+            "CanCreate": false,
+            "CanUpdate": false,
+            "CanDelete": true,
+            "CanUserSort": true,
+            "CanSelect": false,
+            "UseIndexSort": false,
+            "OnDataChanged": "",
+            "OnSearchDataChanged": "",
+            "OnSelectedIndexChanged": "",
+            "OnSelectedIndexChanging": "",
+            "OnDoubleClickRow": "",
+            "Name": "",
+            "IgnoreModification": false,
+            "OnValidateInput": "",
+            "IsFocusSkip": false,
+            "NextFocusField": "",
+            "OnFocusMoving": "",
+            "TypeFullName": "Codeer.LowCode.Blazor.Repository.Design.ListFieldDesign"
+          }
+        },
+        "DetailPageDesign": {
+          "PageTitle": "",
+          "LayoutName": "",
+          "UrlParameter": ""
+        }
+      },
+      {
+        "Title": "状態の列を足したあと/品番未確認(1 以上)",
+        "Icon": "",
+        "IconType": "Font",
+        "HideTitle": false,
+        "ModulePageType": "Auto",
+        "ModuleUrlSegment": "NoCodeYetMin1",
+        "ActiveModuleSegments": [],
+        "PageFrame": "",
+        "Module": "発注予定",
+        "Id": "",
+        "Parameters": "",
+        "ListPageDesign": {
+          "SearchLayoutName": "",
+          "UserUrlParameter": true,
+          "PageTitle": "",
+          "HeaderTitle": "",
+          "CanBulkDataUpdate": false,
+          "CanBulkDataDownload": false,
+          "UseSubmitButton": false,
+          "UseNavigateToCreate": true,
+          "ListFieldDesign": {
+            "LayoutName": "",
+            "CanNavigateToDetail": true,
+            "NavigateModuleUrlSegment": "",
+            "CanCustomizeColumns": false,
+            "FixedColumnCount": 0,
+            "ApplyBackgroundToBoxInput": false,
+            "DisplayName": "",
+            "SearchCondition": {
+              "LimitCount": 50,
+              "SelectFields": [],
+              "SortConditions": [],
+              "SortFieldVariable": "",
+              "SortDescending": false,
+              "ModuleName": "",
+              "Condition": {
+                "IsOrMatch": false,
+                "IsNot": false,
+                "Children": [
+                  {
+                    "SearchTargetVariable": "品番確認済み.Value",
+                    "Comparison": "Equal",
+                    "Value": {
+                      "Value": false,
+                      "TypeFullName": "Codeer.LowCode.Blazor.Repository.BooleanValue"
+                    },
+                    "TypeFullName": "Codeer.LowCode.Blazor.Repository.Match.FieldValueMatchCondition"
+                  },
+                  {
+                    "FieldName": "発注数",
+                    "IsOrMatch": false,
+                    "IsNot": false,
+                    "Children": [
+                      {
+                        "SearchTargetVariable": "発注数.Value",
+                        "Comparison": "GreaterThanOrEqual",
+                        "Value": {
+                          "Value": 1,
+                          "TypeFullName": "Codeer.LowCode.Blazor.Repository.DecimalValue"
+                        },
+                        "TypeFullName": "Codeer.LowCode.Blazor.Repository.Match.FieldValueMatchConditionNonNull"
+                      }
+                    ],
+                    "TypeFullName": "Codeer.LowCode.Blazor.Repository.Match.FieldMatchCondition"
+                  }
+                ],
+                "TypeFullName": "Codeer.LowCode.Blazor.Repository.Match.MultiMatchCondition"
+              }
+            },
+            "DbColumn": "",
+            "IsInMemoryPaging": false,
+            "PagingGroupField": "",
+            "PagingGroupRowCount": 0,
+            "ConfirmBeforePageChange": true,
+            "PagerPosition": "Top",
+            "PagerAlignment": "Right",
+            "ReplaceMode": "None",
+            "DeleteTogether": false,
+            "CanCreate": false,
+            "CanUpdate": false,
+            "CanDelete": true,
+            "CanUserSort": true,
+            "CanSelect": false,
+            "UseIndexSort": false,
+            "OnDataChanged": "",
+            "OnSearchDataChanged": "",
+            "OnSelectedIndexChanged": "",
+            "OnSelectedIndexChanging": "",
+            "OnDoubleClickRow": "",
+            "Name": "",
+            "IgnoreModification": false,
+            "OnValidateInput": "",
+            "IsFocusSkip": false,
+            "NextFocusField": "",
+            "OnFocusMoving": "",
+            "TypeFullName": "Codeer.LowCode.Blazor.Repository.Design.ListFieldDesign"
+          }
+        },
+        "DetailPageDesign": {
+          "PageTitle": "",
+          "LayoutName": "",
+          "UrlParameter": ""
+        }
+      },
+      {
+        "Title": "状態の列を足したあと/品番未確認(0 を除く)",
+        "Icon": "",
+        "IconType": "Font",
+        "HideTitle": false,
+        "ModulePageType": "Auto",
+        "ModuleUrlSegment": "NoCodeYetExcludeZero",
+        "ActiveModuleSegments": [],
+        "PageFrame": "",
+        "Module": "発注予定",
+        "Id": "",
+        "Parameters": "",
+        "ListPageDesign": {
+          "SearchLayoutName": "",
+          "UserUrlParameter": true,
+          "PageTitle": "",
+          "HeaderTitle": "",
+          "CanBulkDataUpdate": false,
+          "CanBulkDataDownload": false,
+          "UseSubmitButton": false,
+          "UseNavigateToCreate": true,
+          "ListFieldDesign": {
+            "LayoutName": "",
+            "CanNavigateToDetail": true,
+            "NavigateModuleUrlSegment": "",
+            "CanCustomizeColumns": false,
+            "FixedColumnCount": 0,
+            "ApplyBackgroundToBoxInput": false,
+            "DisplayName": "",
+            "SearchCondition": {
+              "LimitCount": 50,
+              "SelectFields": [],
+              "SortConditions": [],
+              "SortFieldVariable": "",
+              "SortDescending": false,
+              "ModuleName": "",
+              "Condition": {
+                "IsOrMatch": false,
+                "IsNot": false,
+                "Children": [
+                  {
+                    "SearchTargetVariable": "品番確認済み.Value",
+                    "Comparison": "Equal",
+                    "Value": {
+                      "Value": false,
+                      "TypeFullName": "Codeer.LowCode.Blazor.Repository.BooleanValue"
+                    },
+                    "TypeFullName": "Codeer.LowCode.Blazor.Repository.Match.FieldValueMatchCondition"
+                  },
+                  {
+                    "IsOrMatch": true,
+                    "IsNot": false,
+                    "Children": [
+                      {
+                        "FieldName": "発注数",
+                        "IsOrMatch": false,
+                        "IsNot": false,
+                        "Children": [
+                          {
+                            "SearchTargetVariable": "発注数.Value",
+                            "Comparison": "GreaterThanOrEqual",
+                            "Value": {
+                              "Value": 1,
+                              "TypeFullName": "Codeer.LowCode.Blazor.Repository.DecimalValue"
+                            },
+                            "TypeFullName": "Codeer.LowCode.Blazor.Repository.Match.FieldValueMatchConditionNonNull"
+                          }
+                        ],
+                        "TypeFullName": "Codeer.LowCode.Blazor.Repository.Match.FieldMatchCondition"
+                      },
+                      {
+                        "SearchTargetVariable": "発注数.Value",
+                        "Comparison": "Equal",
+                        "Value": {
+                          "TypeFullName": "Codeer.LowCode.Blazor.Repository.NullValue"
+                        },
+                        "TypeFullName": "Codeer.LowCode.Blazor.Repository.Match.FieldValueMatchCondition"
+                      }
+                    ],
+                    "TypeFullName": "Codeer.LowCode.Blazor.Repository.Match.MultiMatchCondition"
+                  }
+                ],
+                "TypeFullName": "Codeer.LowCode.Blazor.Repository.Match.MultiMatchCondition"
+              }
+            },
+            "DbColumn": "",
+            "IsInMemoryPaging": false,
+            "PagingGroupField": "",
+            "PagingGroupRowCount": 0,
+            "ConfirmBeforePageChange": true,
+            "PagerPosition": "Top",
+            "PagerAlignment": "Right",
+            "ReplaceMode": "None",
+            "DeleteTogether": false,
+            "CanCreate": false,
+            "CanUpdate": false,
+            "CanDelete": true,
+            "CanUserSort": true,
+            "CanSelect": false,
+            "UseIndexSort": false,
+            "OnDataChanged": "",
+            "OnSearchDataChanged": "",
+            "OnSelectedIndexChanged": "",
+            "OnSelectedIndexChanging": "",
+            "OnDoubleClickRow": "",
+            "Name": "",
+            "IgnoreModification": false,
+            "OnValidateInput": "",
+            "IsFocusSkip": false,
+            "NextFocusField": "",
+            "OnFocusMoving": "",
+            "TypeFullName": "Codeer.LowCode.Blazor.Repository.Design.ListFieldDesign"
+          }
+        },
+        "DetailPageDesign": {
+          "PageTitle": "",
+          "LayoutName": "",
+          "UrlParameter": ""
+        }
+      },
+      {
+        "Title": "状態の列を足したあと/品番なし",
+        "Icon": "",
+        "IconType": "Font",
+        "HideTitle": false,
+        "ModulePageType": "Auto",
+        "ModuleUrlSegment": "NoCode",
+        "ActiveModuleSegments": [],
+        "PageFrame": "",
+        "Module": "発注予定",
+        "Id": "",
+        "Parameters": "",
+        "ListPageDesign": {
+          "SearchLayoutName": "",
+          "UserUrlParameter": true,
+          "PageTitle": "",
+          "HeaderTitle": "",
+          "CanBulkDataUpdate": false,
+          "CanBulkDataDownload": false,
+          "UseSubmitButton": false,
+          "UseNavigateToCreate": true,
+          "ListFieldDesign": {
+            "LayoutName": "",
+            "CanNavigateToDetail": true,
+            "NavigateModuleUrlSegment": "",
+            "CanCustomizeColumns": false,
+            "FixedColumnCount": 0,
+            "ApplyBackgroundToBoxInput": false,
+            "DisplayName": "",
+            "SearchCondition": {
+              "LimitCount": 50,
+              "SelectFields": [],
+              "SortConditions": [],
+              "SortFieldVariable": "",
+              "SortDescending": false,
+              "ModuleName": "",
+              "Condition": {
+                "IsOrMatch": false,
+                "IsNot": false,
+                "Children": [
+                  {
+                    "SearchTargetVariable": "品番確認済み.Value",
+                    "Comparison": "Equal",
+                    "Value": {
+                      "Value": true,
+                      "TypeFullName": "Codeer.LowCode.Blazor.Repository.BooleanValue"
+                    },
+                    "TypeFullName": "Codeer.LowCode.Blazor.Repository.Match.FieldValueMatchCondition"
+                  },
+                  {
+                    "FieldName": "仕入先品番",
+                    "IsOrMatch": true,
+                    "IsNot": false,
+                    "Children": [
+                      {
+                        "SearchTargetVariable": "仕入先品番.Value",
+                        "Comparison": "Equal",
+                        "Value": {
+                          "TypeFullName": "Codeer.LowCode.Blazor.Repository.NullValue"
+                        },
+                        "TypeFullName": "Codeer.LowCode.Blazor.Repository.Match.FieldValueMatchCondition"
+                      },
+                      {
+                        "SearchTargetVariable": "仕入先品番.Value",
+                        "Comparison": "Equal",
+                        "Value": {
+                          "Value": "",
+                          "TypeFullName": "Codeer.LowCode.Blazor.Repository.StringValue"
+                        },
+                        "TypeFullName": "Codeer.LowCode.Blazor.Repository.Match.FieldValueMatchCondition"
+                      }
+                    ],
+                    "TypeFullName": "Codeer.LowCode.Blazor.Repository.Match.FieldMatchCondition"
+                  }
+                ],
+                "TypeFullName": "Codeer.LowCode.Blazor.Repository.Match.MultiMatchCondition"
+              }
+            },
+            "DbColumn": "",
+            "IsInMemoryPaging": false,
+            "PagingGroupField": "",
+            "PagingGroupRowCount": 0,
+            "ConfirmBeforePageChange": true,
+            "PagerPosition": "Top",
+            "PagerAlignment": "Right",
+            "ReplaceMode": "None",
+            "DeleteTogether": false,
+            "CanCreate": false,
+            "CanUpdate": false,
+            "CanDelete": true,
+            "CanUserSort": true,
+            "CanSelect": false,
+            "UseIndexSort": false,
+            "OnDataChanged": "",
+            "OnSearchDataChanged": "",
+            "OnSelectedIndexChanged": "",
+            "OnSelectedIndexChanging": "",
+            "OnDoubleClickRow": "",
+            "Name": "",
+            "IgnoreModification": false,
+            "OnValidateInput": "",
+            "IsFocusSkip": false,
+            "NextFocusField": "",
+            "OnFocusMoving": "",
+            "TypeFullName": "Codeer.LowCode.Blazor.Repository.Design.ListFieldDesign"
+          }
+        },
+        "DetailPageDesign": {
+          "PageTitle": "",
+          "LayoutName": "",
+          "UrlParameter": ""
+        }
+      }
+    ],
+    "FontFamily": "",
+    "Color": "#ffffff",
+    "BackgroundColorStart": "#052767",
+    "BackgroundColorEnd": "#3a0647",
+    "MobileBehavior": "CollapseToHamburger",
+    "UserName": "",
+    "ModuleName": "",
+    "Foreground": "#ffffff",
+    "BackgroundStart": "#052767",
+    "BackgroundEnd": "#3a0647"
+  },
+  "Right": {
+    "IsVisible": false,
+    "Home": {
+      "Type": "None",
+      "Text": "",
+      "Icon": "",
+      "ResourcePath": ""
+    },
+    "Links": [],
+    "FontFamily": "",
+    "Color": "#ffffff",
+    "BackgroundColorStart": "#052767",
+    "BackgroundColorEnd": "#3a0647",
+    "MobileBehavior": "CollapseToHamburger",
+    "UserName": "",
+    "ModuleName": "",
+    "Foreground": "#ffffff",
+    "BackgroundStart": "#052767",
+    "BackgroundEnd": "#3a0647"
+  },
+  "Header": {
+    "IsVisible": false,
+    "FontFamily": "",
+    "Color": "#000000",
+    "BackgroundColor": "#f8f9fa",
+    "Home": {
+      "Type": "None",
+      "Text": "",
+      "Icon": "",
+      "ResourcePath": ""
+    },
+    "Links": [],
+    "UserName": "",
+    "ModuleName": "",
+    "Foreground": "#000000",
+    "Background": "#f8f9fa"
+  },
+  "Padding": {},
+  "UserReadCondition": {
+    "ModuleName": ""
+  },
+  "BackgroundColor": "",
+  "Color": "",
+  "FontFamily": "",
+  "OtherPageModuleDesigns": [],
+  "TopPageModuleDesign": {
+    "ModulePageType": "Auto",
+    "ModuleUrlSegment": "",
+    "ActiveModuleSegments": [],
+    "PageFrame": "",
+    "Module": "Home",
+    "Id": "",
+    "Parameters": "",
+    "ListPageDesign": {
+      "SearchLayoutName": "",
+      "UserUrlParameter": true,
+      "PageTitle": "",
+      "HeaderTitle": "",
+      "CanBulkDataUpdate": false,
+      "CanBulkDataDownload": false,
+      "UseSubmitButton": false,
+      "UseNavigateToCreate": true,
+      "ListFieldDesign": {
+        "LayoutName": "",
+        "CanNavigateToDetail": false,
+        "NavigateModuleUrlSegment": "",
+        "CanCustomizeColumns": false,
+        "FixedColumnCount": 0,
+        "ApplyBackgroundToBoxInput": false,
+        "DisplayName": "",
+        "SearchCondition": {
+          "LimitCount": 50,
+          "SelectFields": [],
+          "SortConditions": [],
+          "SortFieldVariable": "",
+          "SortDescending": false,
+          "ModuleName": ""
+        },
+        "DbColumn": "",
+        "IsInMemoryPaging": false,
+        "PagingGroupField": "",
+        "PagingGroupRowCount": 0,
+        "ConfirmBeforePageChange": true,
+        "PagerPosition": "Bottom",
+        "PagerAlignment": "Right",
+        "ReplaceMode": "None",
+        "DeleteTogether": false,
+        "CanCreate": false,
+        "CanUpdate": false,
+        "CanDelete": true,
+        "CanUserSort": true,
+        "CanSelect": false,
+        "UseIndexSort": false,
+        "OnDataChanged": "",
+        "OnSearchDataChanged": "",
+        "OnSelectedIndexChanged": "",
+        "OnSelectedIndexChanging": "",
+        "OnDoubleClickRow": "",
+        "Name": "",
+        "IgnoreModification": false,
+        "OnValidateInput": "",
+        "IsFocusSkip": false,
+        "NextFocusField": "",
+        "OnFocusMoving": "",
+        "TypeFullName": "Codeer.LowCode.Blazor.Repository.Design.ListFieldDesign"
+      }
+    },
+    "DetailPageDesign": {
+      "PageTitle": "",
+      "LayoutName": "",
+      "UrlParameter": ""
+    }
+  },
+  "AutoZoom": "None",
+  "TargetDevice": "Any",
+  "TopPageModule": "Home",
+  "OtherPages": []
+}
