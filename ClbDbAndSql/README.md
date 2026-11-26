@@ -13,6 +13,7 @@ Qiita の連載で使ったサンプルです。DB と SQL の側から Codeer.L
 | --- | --- | --- |
 | [01_ImportFromExistingSqlServer](01_ImportFromExistingSqlServer/) | [既存の SQL Server から Codeer.LowCode.Blazor (CLB) の管理画面を作るまで](https://qiita.com/shinsuke-oda/items/2d2f12281f6bac463ca7) | 既存のテーブルを取り込んで、一覧と詳細の画面を作る |
 | [02_NullEmptyStringZero](02_NullEmptyStringZero/) | [NULL・空文字・0 を Codeer.LowCode.Blazor (CLB) の画面で混同しない](https://qiita.com/shinsuke-oda/items/54b1fad21c6146d9146a) | NULL・空文字・0 の表示、保存、検索での扱いと、状態の列への作り替え |
+| [03_DecimalPrecisionAndRounding](03_DecimalPrecisionAndRounding/) | [金額と数量を Codeer.LowCode.Blazor (CLB) で扱う前に、桁と丸めを決める](https://qiita.com/shinsuke-oda/items/0b1ae9400157fa3faa9f) | 数値のフィールドの桁の設定と、スクリプトでの金額の計算と丸め方 |
 
 動かし方は、それぞれのフォルダの README に書いています。
 
